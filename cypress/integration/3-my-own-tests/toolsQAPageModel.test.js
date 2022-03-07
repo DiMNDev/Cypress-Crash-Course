@@ -84,9 +84,14 @@ context("Check elements", () => {
   });
   //#endregion
 //#region Button
-specify("Button test", () => {
+specify.only("Button test", () => {
   navigation.getButtonNav().click();
-  buttonPage.getButtonOne.dblclick();
+  buttonPage.getButtonOne().dblclick();
+  buttonPage.validateClick('doubleClickMessage').should('contain', 'double click')
+  buttonPage.getButtonTwo().rightclick();
+  buttonPage.validateClick('rightClickMessage').should('contain', 'right click')
+  buttonPage.getButtonThree().click();
+  buttonPage.validateClick('dynamicClickMessage').should('contain', 'dynamic click')
 
 
 })
