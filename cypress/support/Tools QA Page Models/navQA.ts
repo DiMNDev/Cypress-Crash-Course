@@ -8,3 +8,5 @@ export const getRadioNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .ele
 export const getWebTableNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .element-list > .menu-list > #item-3 > .text').should('have.text', 'Web Tables');
 
 export const getButtonNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .element-list > .menu-list > #item-4 > .text').should('have.text', 'Buttons');
+
+export const getLinksNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .element-list > .menu-list > #item-5 > .text').should('have.text', 'Links');

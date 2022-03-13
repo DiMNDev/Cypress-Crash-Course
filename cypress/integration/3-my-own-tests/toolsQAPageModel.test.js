@@ -10,7 +10,9 @@ import * as radioPage from "../../support/Tools QA Page Models/radioButtonQA";
 
 import * as webTablePage from "../../support/Tools QA Page Models/webTablesQA";
 
-import * as buttonPage from "../../support/Tools QA Page Models/buttonQA"
+import * as buttonPage from "../../support/Tools QA Page Models/buttonQA";
+
+import * as linkPage from "../../support/Tools QA Page Models/linksQA";
 
 context("Check elements", () => {
   beforeEach(() => {
@@ -29,7 +31,7 @@ context("Check elements", () => {
     //Error included uneccesary space at the end of the address
     cy.get(".border > #currentAddress").should(
       "include.text",
-      "Current Address :123 street brooklyn 22345"
+      'Current Address :123 street brooklyn 22345'
     );
     //Error incorecct spelling of Permanent [Permananet]
     cy.get(".border > #permanentAddress").should(
@@ -58,7 +60,7 @@ context("Check elements", () => {
     radioPage.getRadio("noRadio").should("be.disabled");
   });
   //#endregion
-  
+
   //#region Web Table
   specify("Web Table test", () => {
     navigation.getWebTableNav().click();
@@ -83,17 +85,70 @@ context("Check elements", () => {
     webTablePage.getTable("2", "1").should("have.text", "Samwise");
   });
   //#endregion
-//#region Button
-specify.only("Button test", () => {
-  navigation.getButtonNav().click();
-  buttonPage.getButtonOne().dblclick();
-  buttonPage.validateClick('doubleClickMessage').should('contain', 'double click')
-  buttonPage.getButtonTwo().rightclick();
-  buttonPage.validateClick('rightClickMessage').should('contain', 'right click')
-  buttonPage.getButtonThree().click();
-  buttonPage.validateClick('dynamicClickMessage').should('contain', 'dynamic click')
+
+  //#region Button
+  specify("Button test", () => {
+    navigation.getButtonNav().click();
+    buttonPage.getButtonOne().dblclick();
+    buttonPage
+      .validateClick("doubleClickMessage")
+      .should("contain", "double click");
+    buttonPage.getButtonTwo().rightclick();
+    buttonPage
+      .validateClick("rightClickMessage")
+      .should("contain", "right click");
+    buttonPage.getButtonThree().click();
+    buttonPage
+      .validateClick("dynamicClickMessage")
+      .should("contain", "dynamic click");
+  });
+  //#endregion
+
+  //#region Links
+  specify.only("Links test", () => {
+    navigation.getLinksNav().click();
+    linkPage
+      .getLink("simpleLink", "Home")
+      .should("have.attr", "target", "_blank");
+    linkPage
+      .getLink("dynamicLink", "Home")
+      .should("have.attr", "target", "_blank");
+    linkPage.interceptCreated();
+    linkPage.getLink("created", "Created").click();
+    cy.wait('@created-intercept');
+    linkPage.verifyAPIResponse('201');
+
+    linkPage.getIntercept('/no-content', 'no-content-intercept');
+    linkPage.getLink('no-content', 'No Content').click();
+    cy.wait('@no-content-intercept');
+    linkPage.verifyAPIResponse('204');
+
+    linkPage.getIntercept('/moved', 'moved-intercept');
+    linkPage.getLink('moved', 'Moved').click();
+    cy.wait('@moved-intercept');
+    linkPage.verifyAPIResponse('301');
+
+    linkPage.getIntercept('/bad-request', 'bad-request-intercept');
+    linkPage.getLink('bad-request', 'Bad Request').click();
+    cy.wait('@bad-request-intercept');
+    linkPage.verifyAPIResponse('400')
+
+    linkPage.getIntercept('/unauthorized', 'unauthorized-intercept');
+    linkPage.getLink('unauthorized', 'Unauthorized').click();
+    cy.wait('@unauthorized-intercept');
+    linkPage.verifyAPIResponse('401');
+
+    linkPage.getIntercept('/forbidden', 'forbidden-intercept');
+    linkPage.getLink('forbidden', 'Forbidden').click();
+    cy.wait('@forbidden-intercept');
+    linkPage.verifyAPIResponse('403');
+
+    linkPage.getIntercept('/invalid-url', 'not-found-intercept');
+    linkPage.getLink('invalid-url', 'Not Found').click();
+    cy.wait('@not-found-intercept');
+    linkPage.verifyAPIResponse('404')
 
 
-})
-//#endregion
+  });
+  //#endregion
 });
