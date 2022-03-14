@@ -10,3 +10,5 @@ export const getWebTableNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .
 export const getButtonNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .element-list > .menu-list > #item-4 > .text').should('have.text', 'Buttons');
 
 export const getLinksNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .element-list > .menu-list > #item-5 > .text').should('have.text', 'Links');
+
+export const getBrokenLinksNav = (): Cypress.Chainable => cy.get(':nth-child(1) > .element-list > .menu-list > #item-6 > .text').should('have.text', 'Broken Links - Images');
