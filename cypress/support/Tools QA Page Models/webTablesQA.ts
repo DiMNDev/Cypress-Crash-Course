@@ -14,8 +14,8 @@ export const getDepartment = (): Cypress.Chainable => cy.get('[id=department');
 
 export const submitButton = (): Cypress.Chainable => cy.get('[id=submit]');
 
-export const deleteRecord =(entryIndex): Cypress.Chainable => cy.get('#delete-record-' + entryIndex)
+export const deleteRecord =(entryIndex: string): Cypress.Chainable => cy.get('#delete-record-' + entryIndex)
 
-export const editRecord =(entryIndex): Cypress.Chainable => cy.get('#edit-record-' + entryIndex)
+export const editRecord =(entryIndex: string): Cypress.Chainable => cy.get('#edit-record-' + entryIndex)
 
 export const getTable = (verticalIndex: string, horizontalIndex: string): Cypress.Chainable => cy.get(`.rt-tbody > :nth-child(${verticalIndex}) > .rt-tr > :nth-child(${horizontalIndex})`)

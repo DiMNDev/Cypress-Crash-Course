@@ -16,6 +16,8 @@ import * as linkPage from "../../support/Tools QA Page Models/linksQA";
 
 import * as brokenLinksPage from "../../support/Tools QA Page Models/brokenLinksQA";
 
+import * as uploadDownloadPage from "../../support/Tools QA Page Models/uploadDownloadQA";
+
 context("Check elements", () => {
   beforeEach(() => {
     cy.visit("https://demoqa.com/elements");
@@ -28,18 +30,12 @@ context("Check elements", () => {
     textboxPage.getCurrentAddressTextbox().type("123 street brooklyn 22345");
     textboxPage.getPermanentAddressTextbox().type("123 street brooklyn 22345");
     textboxPage.getSubmitButton().click();
-    cy.get("#name").should("have.text", "Name:username");
-    cy.get("#email").should("have.text", "Email:useremail@gmail.com");
-    //Error included uneccesary space at the end of the address
-    cy.get(".border > #currentAddress").should(
-      "include.text",
-      "Current Address :123 street brooklyn 22345"
-    );
-    //Error incorecct spelling of Permanent [Permananet]
-    cy.get(".border > #permanentAddress").should(
-      "have.text",
-      "Permanent Address :123 street brooklyn 22345"
-    );
+    textboxPage.verifyName("username");
+    textboxPage.verifyEmail("useremail@gmail.com");
+    //Error included uneccesary space at the end of the address (fails with have.text passes with include.text) reference page model
+    textboxPage.verifyCurrentAddress("123 street brooklyn 22345");
+    //Error incorrect spelling of Permanent [Permananet] (fails for incorrect spelling) reference page model
+    textboxPage.verifyPermanentAddress("123 street brooklyn 22345");
   });
   //#endregion
 
@@ -48,7 +44,7 @@ context("Check elements", () => {
     navigation.getCheckboxNav().click();
     checkboxPage.getHomeCollapseArrow().click();
     checkboxPage.checkDesktop().click();
-    cy.get("#result").should("exist", "desktop");
+    checkboxPage.verifyResult("Desktop");
   });
   //#endregion
 
@@ -115,39 +111,40 @@ context("Check elements", () => {
     linkPage
       .getLink("dynamicLink", "Home")
       .should("have.attr", "target", "_blank");
+      
     linkPage.interceptCreated();
     linkPage.getLink("created", "Created").click();
-    cy.wait("@created-intercept");
+    linkPage.waitFor("@created-intercept");
     linkPage.verifyAPIResponse("201");
 
     linkPage.getIntercept("/no-content", "no-content-intercept");
     linkPage.getLink("no-content", "No Content").click();
-    cy.wait("@no-content-intercept");
+    linkPage.waitFor("@no-content-intercept");
     linkPage.verifyAPIResponse("204");
 
     linkPage.getIntercept("/moved", "moved-intercept");
     linkPage.getLink("moved", "Moved").click();
-    cy.wait("@moved-intercept");
+    linkPage.waitFor("@moved-intercept");
     linkPage.verifyAPIResponse("301");
 
     linkPage.getIntercept("/bad-request", "bad-request-intercept");
     linkPage.getLink("bad-request", "Bad Request").click();
-    cy.wait("@bad-request-intercept");
+    linkPage.waitFor("@bad-request-intercept");
     linkPage.verifyAPIResponse("400");
 
     linkPage.getIntercept("/unauthorized", "unauthorized-intercept");
     linkPage.getLink("unauthorized", "Unauthorized").click();
-    cy.wait("@unauthorized-intercept");
+    linkPage.waitFor("@unauthorized-intercept");
     linkPage.verifyAPIResponse("401");
 
     linkPage.getIntercept("/forbidden", "forbidden-intercept");
     linkPage.getLink("forbidden", "Forbidden").click();
-    cy.wait("@forbidden-intercept");
+    linkPage.waitFor("@forbidden-intercept");
     linkPage.verifyAPIResponse("403");
 
     linkPage.getIntercept("/invalid-url", "not-found-intercept");
     linkPage.getLink("invalid-url", "Not Found").click();
-    cy.wait("@not-found-intercept");
+    linkPage.waitFor("@not-found-intercept");
     linkPage.verifyAPIResponse("404");
   });
   //#endregion
@@ -159,7 +156,11 @@ context("Check elements", () => {
     //THIS IS NOT ACTUALLY VISIBLE!
     brokenLinksPage.getBrokenImage().should("be.visible");
     //Can use more direct locator or grab src alone
-    brokenLinksPage.getAndVerifyImage(':nth-child(2) > [src="/images/Toolsqa.jpg"]', 100, 347);
+    brokenLinksPage.getAndVerifyImage(
+      ':nth-child(2) > [src="/images/Toolsqa.jpg"]',
+      100,
+      347
+    );
     brokenLinksPage.getAndVerifyImage('[src="/images/Toolsqa_1.jpg"]', 0, 0);
     brokenLinksPage.requestAndVerify("/images/Toolsqa.jpg", 200);
     brokenLinksPage.requestAndVerify("http://demoqa.com", 200);
@@ -168,6 +169,13 @@ context("Check elements", () => {
       "http://the-internet.herokuapp.com/status_codes/500",
       500
     );
+  });
+  //#endregion
+
+  //#region Upload and Download
+  specify.skip("Upload and Download test", () => {
+    navigation.getUploadDownloadNav().click();
+    uploadDownloadPage.getDownloadButton().click();
   });
   //#endregion
 });
