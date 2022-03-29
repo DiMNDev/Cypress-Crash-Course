@@ -173,9 +173,14 @@ context("Check elements", () => {
   //#endregion
 
   //#region Upload and Download
-  specify.skip("Upload and Download test", () => {
+  specify.only("Upload and Download test", () => {
     navigation.getUploadDownloadNav().click();
     uploadDownloadPage.getDownloadButton().click();
+    uploadDownloadPage.verifyDownload('sampleFile.jpeg');
+    uploadDownloadPage.uploadFile('cypress/fixtures/Ace_diamonds.svg');
+    uploadDownloadPage.verifyUpload('Ace_diamonds')
+
+    
   });
   //#endregion
 });
