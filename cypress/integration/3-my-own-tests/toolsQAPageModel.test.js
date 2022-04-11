@@ -18,7 +18,14 @@ import * as brokenLinksPage from "../../support/Tools QA Page Models/brokenLinks
 
 import * as uploadDownloadPage from "../../support/Tools QA Page Models/uploadDownloadQA";
 
+import * as dynamicPropertiesPage from "../../support/Tools QA Page Models/dynamicPropertiesQA";
+
 context("Check elements", () => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    return false
+  })
   beforeEach(() => {
     cy.visit("https://demoqa.com/elements");
   });
@@ -173,7 +180,7 @@ context("Check elements", () => {
   //#endregion
 
   //#region Upload and Download
-  specify.only("Upload and Download test", () => {
+  specify("Upload and Download test", () => {
     navigation.getUploadDownloadNav().click();
     uploadDownloadPage.getDownloadButton().click();
     uploadDownloadPage.verifyDownload('sampleFile.jpeg');
@@ -182,5 +189,21 @@ context("Check elements", () => {
 
     
   });
+  //#endregion
+
+  //#region Dynamic Properties
+specify('Dynamic properties test', () => {
+navigation.getDynamicPropertiesNav().click();
+dynamicPropertiesPage.getRandomTextId().should('exist');
+dynamicPropertiesPage.getWillEnableButton().should('be.disabled');
+dynamicPropertiesPage.getColorChangeButton().should('have.css', 'color', 'rgb(255, 255, 255)' );
+dynamicPropertiesPage.getVisibleAfterButton().should('not.exist');
+dynamicPropertiesPage.wait5Seconds();
+dynamicPropertiesPage.getWillEnableButton().should('be.enabled');
+dynamicPropertiesPage.getColorChangeButton().should('have.css', 'color', 'rgb(220, 53, 69)' );
+dynamicPropertiesPage.getVisibleAfterButton().should('exist');
+
+});
+
   //#endregion
 });
